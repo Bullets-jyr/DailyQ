@@ -13,6 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import java.time.LocalDate
+import java.util.concurrent.TimeUnit
 
 interface ApiService {
 
@@ -28,6 +29,9 @@ interface ApiService {
             logging.level = HttpLoggingInterceptor.Level.BODY
 
             return builder
+                .connectTimeout(3, TimeUnit.SECONDS)
+                .writeTimeout(3, TimeUnit.SECONDS)
+                .readTimeout(3, TimeUnit.SECONDS)
                 .addInterceptor(logging)
                 .build()
         }

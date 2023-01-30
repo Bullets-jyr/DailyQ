@@ -5,6 +5,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.gson.Gson
+import kr.co.bullets.dailyq.api.response.HelloWorld
 import kr.co.bullets.dailyq.databinding.FragmentTodayBinding
 import kr.co.bullets.dailyq.ui.base.BaseFragment
 import org.json.JSONObject
@@ -12,6 +14,8 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.DateFormat
+import java.util.*
 
 class TodayFragment : BaseFragment() {
 
@@ -47,13 +51,19 @@ class TodayFragment : BaseFragment() {
             reader.close()
             conn.disconnect()
 
-            val json = JSONObject(body)
-            val date = json.getString("date")
-            val message = json.getString("message")
+//            val json = JSONObject(body)
+//            val date = json.getString("date")
+//            val message = json.getString("message")
+
+            val gson = Gson()
+            val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.KOREA)
+            val helloWorld = gson.fromJson(body, HelloWorld::class.java)
 
             activity?.runOnUiThread {
-                binding.date.text = date
-                binding.question.text = message
+//                binding.date.text = date
+//                binding.question.text = message
+                binding.date.text = dateFormat.format(helloWorld.date)
+                binding.question.text = helloWorld.message
             }
         }.start()
     }

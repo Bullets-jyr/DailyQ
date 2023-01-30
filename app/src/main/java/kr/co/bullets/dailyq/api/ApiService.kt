@@ -3,11 +3,13 @@ package kr.co.bullets.dailyq.api
 import android.content.Context
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import kr.co.bullets.dailyq.api.converter.LocalDateConverterFactory
 import kr.co.bullets.dailyq.api.response.Question
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
+import java.time.LocalDate
 
 interface ApiService {
 
@@ -25,6 +27,7 @@ interface ApiService {
 
             return Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .addConverterFactory(LocalDateConverterFactory())
                 .baseUrl("http://192.168.0.105:8080")
                 .build()
                 .create(ApiService::class.java)
@@ -48,5 +51,6 @@ interface ApiService {
     }
 
     @GET("v1/questions/{qid}")
-    suspend fun getQuestion(@Path("qid") qid: String): Question
+//    suspend fun getQuestion(@Path("qid") qid: String): Question
+    suspend fun getQuestion(@Path("qid") qid: LocalDate): Question
 }

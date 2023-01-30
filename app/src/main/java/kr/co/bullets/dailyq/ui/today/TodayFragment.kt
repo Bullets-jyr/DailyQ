@@ -11,6 +11,7 @@ import kr.co.bullets.dailyq.databinding.FragmentTodayBinding
 import kr.co.bullets.dailyq.ui.base.BaseFragment
 import java.text.DateFormat
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 
 class TodayFragment : BaseFragment() {
@@ -67,8 +68,9 @@ class TodayFragment : BaseFragment() {
 //            val api = ApiService.create(requireContext())
 
             val qidDateFormat = SimpleDateFormat("yyyy-MM-dd")
-            val qid = qidDateFormat.format(Date())
-            val question = api.getQuestion(qid)
+//            val qid = qidDateFormat.format(Date())
+//            val question = api.getQuestion(qid)
+            val question = api.getQuestion(LocalDate.now())
 
             val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.KOREA)
             // parse() 메서드로는 API의 응답으로 10자리 날짜 문자열을 Date 객체로 변환합니다.

@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kr.co.bullets.dailyq.R
 import kr.co.bullets.dailyq.databinding.ActivityMainBinding
+import kr.co.bullets.dailyq.ui.profile.ProfileFragment
 import kr.co.bullets.dailyq.ui.timeline.TimelineFragment
+import kr.co.bullets.dailyq.ui.today.TodayFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,11 +26,11 @@ class MainActivity : AppCompatActivity() {
                     supportActionBar?.setTitle(R.string.title_timeline)
                 }
                 R.id.today -> {
-                    ft.replace(R.id.host, TimelineFragment())
+                    ft.replace(R.id.host, TodayFragment())
                     supportActionBar?.setTitle(R.string.title_today)
                 }
                 R.id.profile -> {
-                    ft.replace(R.id.host, TimelineFragment())
+                    ft.replace(R.id.host, ProfileFragment())
                     supportActionBar?.setTitle(R.string.title_profile)
                 }
             }

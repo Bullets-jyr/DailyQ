@@ -1,19 +1,21 @@
 package kr.co.bullets.dailyq.ui.main
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.google.android.material.navigation.NavigationBarView
+import androidx.appcompat.app.AppCompatActivity
 import kr.co.bullets.dailyq.R
+import kr.co.bullets.dailyq.databinding.ActivityMainBinding
 import kr.co.bullets.dailyq.ui.timeline.TimelineFragment
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val navView = findViewById<NavigationBarView>(R.id.nav_view)
-
-        navView.setOnItemSelectedListener {
+        binding.navView.setOnItemSelectedListener {
             val ft = supportFragmentManager.beginTransaction()
 
             when (it.itemId) {
@@ -35,6 +37,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         // MainActivity가 시작할 때 오늘의 질문이 선택되도록 했습니다.
-        navView.selectedItemId = R.id.today
+        binding.navView.selectedItemId = R.id.today
     }
 }

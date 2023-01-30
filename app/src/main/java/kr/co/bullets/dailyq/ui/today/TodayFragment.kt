@@ -12,6 +12,7 @@ import kr.co.bullets.dailyq.ui.base.BaseFragment
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class TodayFragment : BaseFragment() {
@@ -55,7 +56,7 @@ class TodayFragment : BaseFragment() {
             val gson = Gson()
             val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.KOREA)
             val helloWorld = gson.fromJson(body, HelloWorld::class.java)
-
+5.3.2 Gson 타입 어댑터
             activity?.runOnUiThread {
 //                binding.date.text = date
 //                binding.question.text = message
@@ -67,14 +68,16 @@ class TodayFragment : BaseFragment() {
         viewLifecycleOwner.lifecycleScope.launch {
 //            val api = ApiService.create(requireContext())
 
-            val qidDateFormat = SimpleDateFormat("yyyy-MM-dd")
+//            val qidDateFormat = SimpleDateFormat("yyyy-MM-dd")
 //            val qid = qidDateFormat.format(Date())
 //            val question = api.getQuestion(qid)
             val question = api.getQuestion(LocalDate.now())
+            val dateFormatter = DateTimeFormatter.ofPattern("yyyy. M. d.")
 
             val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.KOREA)
             // parse() 메서드로는 API의 응답으로 10자리 날짜 문자열을 Date 객체로 변환합니다.
-            binding.date.text = dateFormat.format(qidDateFormat.parse(question.id))
+//            binding.date.text = dateFormat.format(qidDateFormat.parse(question.id))
+            binding.date.text = dateFormatter.format(question.id)
             binding.question.text = question.text
         }
     }

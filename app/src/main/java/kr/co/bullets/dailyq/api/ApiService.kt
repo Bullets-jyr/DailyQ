@@ -3,8 +3,11 @@ package kr.co.bullets.dailyq.api
 import android.content.Context
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import kr.co.bullets.dailyq.api.adapter.LocalDateAdapter
 import kr.co.bullets.dailyq.api.converter.LocalDateConverterFactory
 import kr.co.bullets.dailyq.api.response.Question
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -19,16 +22,32 @@ interface ApiService {
         // 싱글톤 인스턴스를 보관할 INSTANCE 변수
         private var INSTANCE: ApiService? = null
 
+        private fun okHttpClient(): OkHttpClient {
+            val builder = OkHttpClient.Builder()
+            val logging = HttpLoggingInterceptor()
+            logging.level = HttpLoggingInterceptor.Level.BODY
+
+            return builder
+                .addInterceptor(logging)
+                .build()
+        }
+
         // Retrofit을 만들던 create() 메서드는 private으로 변경해 외부에서 호출할 수 없도록 했습니다.
         private fun create(context: Context): ApiService {
+            // 응답은 Gson이 변환하기 때문에 별도의 작업이 필요합니다.
+            // 4장의 커스텀 직렬화와 역직렬화에서 본 것처럼 Gson이 LocalDate를 처리할 수 있도록 LocalDateAdapter를 만들고
+            // Gson.Builder에 등록합니다.
             val gson = GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .registerTypeAdapter(LocalDate::class.java, LocalDateAdapter)
                 .create()
 
             return Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                // Retrofit으로 요청을 보낼 때 LocalDate를 변환할 수 있도록 LocalDateConverterFactory를 만들어서 등록했지만,
                 .addConverterFactory(LocalDateConverterFactory())
                 .baseUrl("http://192.168.0.105:8080")
+                .client(okHttpClient())
                 .build()
                 .create(ApiService::class.java)
         }

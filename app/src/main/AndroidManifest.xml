@@ -15,6 +15,11 @@
         android:theme="@style/Theme.DailyQ"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <!-- 소프트 키보드가 표시됐을 때 레이아웃의 크기를 조절하기 위해 windowSoftInputMode에 adjustResize를 사용했습니다. -->
+        <activity
+            android:name=".ui.write.WriteActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.base.BaseActivity"
             android:exported="false" />

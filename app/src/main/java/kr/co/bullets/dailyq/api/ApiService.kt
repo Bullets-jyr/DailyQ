@@ -5,13 +5,14 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import kr.co.bullets.dailyq.api.adapter.LocalDateAdapter
 import kr.co.bullets.dailyq.api.converter.LocalDateConverterFactory
+import kr.co.bullets.dailyq.api.response.Answer
 import kr.co.bullets.dailyq.api.response.Question
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.*
 import java.time.LocalDate
 import java.util.concurrent.TimeUnit
 
@@ -73,7 +74,53 @@ interface ApiService {
         fun getInstance(): ApiService = INSTANCE!!
     }
 
+    /**
+     * Retrofit의 여러 가지 기능을 사용했습니다. 하나씩 살펴보겠습니다.
+     *
+     * 메서드의 반환값을 제네릭 클래스인 Response<T>로 선언하고 DTO(Data Transfer Object) 클래스를
+     * 타입 매개변수로 사용했습니다. [코드 5-4] ApiService.getQuestion() 메서드처럼 Question을
+     * 직접 반환값으로 받으면 HTTP 응답의 코드나 헤더와 같은 정보를 사용할 수 없다는 문제가 있습니다.
+     * Response는 code() 메서드로 HTTP 응답 코드를 가져올 수 있고, headers() 메서드로는 HTTP 응답 헤더를
+     * 가져올 수 있습니다. 그리고 body() 메서드로는 타입 매개변수로 선언했던 응답의 본문을 가져올 수 있습니다.
+     *
+     * 다음으로 @POST와 @PUT 어노테이션을 알아보겠습니다. HTTP의 POST와 PUT 요청은 본문을 갖는데, Retrofit에서
+     * 본문을 구성하는 방법은 세 가지가 있습니다.
+     *
+     * 1) @FormUrlEncoded
+     * 이 어노테이션은 요청의 Content-Type을 application/x-www-form-urlencoded로 만듭니다.
+     * 그리고 메서드의 매개변수 중에서 @Field 어노테이션이 붙은 것을 본문으로 만듭니다.
+     *
+     * 2) @Multipart
+     * 파일을 보내거나 여러 타입의 데이터를 하나의 요청으로 보내기 위해서는 multipart/form-data로 요청을 보내야 합니다.
+     * Retrofit에서는 메서드에 @Multipart를 붙여 만들 수 있습니다. MultipartBody.Part 타입의 매개변수에 @Part를 붙여
+     * 각 파트를 정의합니다.
+     *
+     * 3) Json
+     * 마지막은 이 책에서는 사용하지 않지만 JSON으로 요청을 보낼 때 주로 사용하는 방법입니다.
+     * 요청에 전달할 매개변수를 객체로 만들고 메서드의 매개변수로 전달합니다.
+     * 이 매개변수에 @Body 어노테이션을 붙이면 Retrofit에 등록된 컨버터가 객체를 직렬화하여 요청의 본문으로 사용합니다.
+     * @POST("/v1/questions/{qid}/answers")
+     * suspend fun writeAnswer(@Path("qid") qid: LocalDate, @Body params: WriteParams): Response<Answer>
+     * WriteParams 객체를 만들어 writeAnswer() 메서드의 매개변수로 사용했습니다. 이렇게 하면 HTTP 메시지에서
+     * Content-Type이 application/json이 되고, WriteParams가 본문의 JSON이 됩니다.
+     */
+
     @GET("v1/questions/{qid}")
 //    suspend fun getQuestion(@Path("qid") qid: String): Question
-    suspend fun getQuestion(@Path("qid") qid: LocalDate): Question
+//    suspend fun getQuestion(@Path("qid") qid: LocalDate): Question
+    suspend fun getQuestion(@Path("qid") qid: LocalDate): Response<Question>
+
+    @GET("/v1/questions/{qid}/answers/{uid}")
+    suspend fun getAnswer(@Path("qid") qid: LocalDate, @Path("uid") uid: String? = "anonymous"): Response<Answer>
+
+    @FormUrlEncoded
+    @POST("/v1/questions/{qid}/answers")
+    suspend fun writeAnswer(@Path("qid") qid: LocalDate, @Field("text") text: String? = null, @Field("photo") photo: String? = null): Response<Answer>
+
+    @FormUrlEncoded
+    @PUT("/v1/questions/{qid}/answers/{uid}")
+    suspend fun editAnswer(@Path("qid") qid: LocalDate, @Field("text") text: String? = null, @Field("photo") photo: String? = null, @Field("uid") uid: String? = "anonymous"): Response<Answer>
+
+    @DELETE("/v1/questions/{qid}/answers/{uid}")
+    suspend fun deleteAnswer(@Path("qid") qid: LocalDate, @Path("uid") uid: String? = "anonymous"): Response<Unit>
 }

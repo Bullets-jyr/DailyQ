@@ -10,4 +10,9 @@
     <string name="ok">확인</string>
     <string name="cancel">취소</string>
     <string name="dialog_msg_are_you_sure_to_delete">정말 삭제하시겠습니까?</string>
+
+    <string name="answer_hint">나는...</string>
+    <string name="add_photo">사진 추가</string>
+    <string name="done">완료</string>
+    <string name="date_format">yyyy년 M월 d일</string>
 </resources>

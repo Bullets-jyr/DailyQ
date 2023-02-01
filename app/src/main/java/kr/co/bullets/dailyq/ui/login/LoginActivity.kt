@@ -103,7 +103,7 @@ class LoginActivity : BaseActivity() {
                     val authToken = authTokenResponse.body()
 
                     AuthManager.uid = uid
-                    AuthManager.accesToken = authToken?.accesToken
+                    AuthManager.accessToken = authToken?.accessToken
                     AuthManager.refreshToken = authToken?.refreshToken
 
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))

@@ -36,6 +36,9 @@ interface ApiService {
                 .connectTimeout(3, TimeUnit.SECONDS)
                 .writeTimeout(3, TimeUnit.SECONDS)
                 .readTimeout(3, TimeUnit.SECONDS)
+                // AuthInterceptor는 애플리케이션 인터셉터로 등록하겠습니다. [코드 6-15]처럼 OkHttp Client.Builder의
+                // addInterceptor() 메서드로 추가합니다. 네트워크 인터셉터를 추가하고 싶다면 addNetworkInterceptor() 메서드를 사용합니다.
+                .addInterceptor(AuthInterceptor())
                 .addInterceptor(logging)
                 .build()
         }

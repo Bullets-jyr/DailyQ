@@ -19,7 +19,7 @@ class SplashActivity : AppCompatActivity() {
         lifecycleScope.launch {
             delay(1000)
 
-            if (AuthManager.accesToken.isNullOrBlank()) {
+            if (AuthManager.accessToken.isNullOrBlank()) {
                 startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
             } else {
                 startActivity(Intent(this@SplashActivity, MainActivity::class.java))

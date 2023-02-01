@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.splash.SplashActivity">
+
+    <!-- 스플래시 화면은 앱을 실행했을 때 가장 먼저 보게 되는 화면으로 -->
+    <!-- 아주 잠깐 머물며 브랜드 아이덴티티 노출하고 서버에서 앱의 설정을 받아 갱신하기도 합니다. -->
+    <!-- Daily Q의 스플래시에서는 로그인 여부를 확인하고 LoginActivity나 MainActivity로 분기를 하겠습니다. -->
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/large_logo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

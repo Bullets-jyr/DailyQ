@@ -15,4 +15,13 @@
     <string name="add_photo">사진 추가</string>
     <string name="done">완료</string>
     <string name="date_format">yyyy년 M월 d일</string>
+
+    <string name="login_id_hint">아이디</string>
+    <string name="login_password_hint">패스워드</string>
+    <string name="login">로그인</string>
+
+    <string name="error_uid_too_short">아이디가 너무 짧습니다.</string>
+    <string name="error_password_too_short">패스워드가 너무 짧습니다.</string>
+    <string name="error_password_must_contain_number">숫자가 포함되어야 합니다.</string>
+    <string name="error_login_failed">아이디 또는 패스워드를 다시 확인해주세요.</string>
 </resources>

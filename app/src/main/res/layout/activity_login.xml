@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.login.LoginActivity">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_normal"
+        android:src="@drawable/large_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/input_area"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_normal"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logo">
+
+        <!-- Edit Text에 입력하기 전에 표시되는 hint 속성이 TextInputEditText가 아닌 TextInputLayout에 위치합니다. -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/user_id_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/login_id_hint"
+            app:startIconDrawable="@drawable/ic_person">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/user_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:nextFocusDown="@id/password" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- TextInputLayout은 패스워드 숨김 여부를 변경할 수 있는 토글 버튼을 지원합니다. -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password_layout"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:hint="@string/login_password_hint"
+            app:passwordToggleEnabled="true"
+            app:startIconDrawable="@drawable/ic_lock">
+
+            <!-- 패스워드 입력 필드엔 android:imeOptions 속성이 있습니다. -->
+            <!-- 이 속성에 알맞은 값을 입력하면 [그림 6-7]처럼 스크린 키보드 엔터키의 작동과 아이콘을 설정할 수 있습니다. -->
+            <!-- 그리고 [코드 6-8]에서 OnEditorActionListener로 버튼 액션에 맞는 작동을 구현한 것을 볼 수 있습니다. -->
+            <!-- 레이아웃에서 imeOptions를 actionDone으로 설정한 후 -->
+            <!-- 스크린 키보드에서 '완료' 버튼을 눌렀을 땐 actionId로 IME_ACTION_DONE이 전달되고, -->
+            <!-- 물리 키보드에서 엔터를 눌렀을 땐 IME_ACTION_UNSPECIFIED와 키 코드를 포함한 event가 함께 전달됩니다. -->
+            <!-- 이 기능은 어떤 IME(키보드 앱)를 사용하냐에 따라 전달되는 actionId가 다를 수 있다는 점에서 주의가 필요합니다. -->
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_normal"
+            android:text="@string/login" />
+
+    </LinearLayout>
+
+    <!-- 스토리보드나 디자인 가이드에 따로 요구사항이 없지만 로그인이 진행 중일 때 표시하는 프로그래스바에 ContentLoadingProgressBar를 사용했습니다. -->
+    <!-- ContentLoadingProgressBar는 show() 메서드를 호출했을 때 일정 시간이 지난 후 표시되고 hide() 메서드를 호출하면 일정 시간이 지났는지 확인한 후 사라지므로 -->
+    <!-- 로딩 시간이 짧을 때 표시되자마자 사라져 깜빡이는 것처럼 느껴지는 현상을 방지합니다. -->
+    <androidx.core.widget.ContentLoadingProgressBar
+        android:id="@+id/progress"
+        style="?android:progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/input_area"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

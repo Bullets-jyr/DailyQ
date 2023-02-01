@@ -3,12 +3,15 @@ package kr.co.bullets.dailyq.api
 import android.content.Context
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import kr.co.bullets.dailyq.AuthManager
 import kr.co.bullets.dailyq.api.adapter.LocalDateAdapter
 import kr.co.bullets.dailyq.api.converter.LocalDateConverterFactory
 import kr.co.bullets.dailyq.api.response.Answer
+import kr.co.bullets.dailyq.api.response.AuthToken
 import kr.co.bullets.dailyq.api.response.Question
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -51,7 +54,8 @@ interface ApiService {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 // Retrofit으로 요청을 보낼 때 LocalDate를 변환할 수 있도록 LocalDateConverterFactory를 만들어서 등록했지만,
                 .addConverterFactory(LocalDateConverterFactory())
-                .baseUrl("http://192.168.0.105:8080")
+//                .baseUrl("http://192.168.0.105:8080")
+                .baseUrl("http://192.168.1.169:8080")
                 .client(okHttpClient())
                 .build()
                 .create(ApiService::class.java)
@@ -105,22 +109,38 @@ interface ApiService {
      * Content-Type이 application/json이 되고, WriteParams가 본문의 JSON이 됩니다.
      */
 
-    @GET("v1/questions/{qid}")
+    /**
+     * 응답으로 받은 AuthToken은 로그아웃을 하기 전까지 계속 사용을 해야 하기 때문에 앱이 종료된 후에도 보관할 수 있도록 SharedPreferences에 보관하겠습니다.
+     * SharedPreferences는 값을 불러오거나 저장할 때 매번 키와 타입을 지정해야 해서 실수하기 쉽습니다. 그래서 SharedPreferences를 멤버변수로 갖는 AuthManager를 만들고
+     * AuthManager의 멤버변수에 getter와 setter를 정의해 사용자가 직접 SharedPreferences를 호출하다 실수하는 것을 방지하겠습니다.
+     * 또한 object 키워드로 싱글톤을 만들어 앱의 어느 곳에서나 바로 사용할 수 있도록 합니다. 주의할 점은 최초에 SharedPreferences를 불러올 때 Context가 필요하기 때문에
+     * 사용하기 전에 최초 1회 init() 메서드를 호출해 context를 전달하여 초기화를 해야 합니다.
+     */
+
+    @FormUrlEncoded
+    @POST("/v2/token")
+    suspend fun login(@Field("username") uid: String, @Field("password") password: String, @Field("grant_type") grantType: String = "password"): Response<AuthToken>
+
+    @FormUrlEncoded
+    @POST("/v2/token")
+    suspend fun refreshToken(@Field("refresh_token") refreshToken: String, @Field("grant_type") grantType: String = "refresh_token"): Call<AuthToken>
+
+    @GET("v2/questions/{qid}")
 //    suspend fun getQuestion(@Path("qid") qid: String): Question
 //    suspend fun getQuestion(@Path("qid") qid: LocalDate): Question
     suspend fun getQuestion(@Path("qid") qid: LocalDate): Response<Question>
 
-    @GET("/v1/questions/{qid}/answers/{uid}")
-    suspend fun getAnswer(@Path("qid") qid: LocalDate, @Path("uid") uid: String? = "anonymous"): Response<Answer>
+    @GET("/v2/questions/{qid}/answers/{uid}")
+    suspend fun getAnswer(@Path("qid") qid: LocalDate, @Path("uid") uid: String? = AuthManager.uid): Response<Answer>
 
     @FormUrlEncoded
-    @POST("/v1/questions/{qid}/answers")
+    @POST("/v2/questions/{qid}/answers")
     suspend fun writeAnswer(@Path("qid") qid: LocalDate, @Field("text") text: String? = null, @Field("photo") photo: String? = null): Response<Answer>
 
     @FormUrlEncoded
-    @PUT("/v1/questions/{qid}/answers/{uid}")
+    @PUT("/v2/questions/{qid}/answers/{uid}")
     suspend fun editAnswer(@Path("qid") qid: LocalDate, @Field("text") text: String? = null, @Field("photo") photo: String? = null, @Field("uid") uid: String? = "anonymous"): Response<Answer>
 
-    @DELETE("/v1/questions/{qid}/answers/{uid}")
-    suspend fun deleteAnswer(@Path("qid") qid: LocalDate, @Path("uid") uid: String? = "anonymous"): Response<Unit>
+    @DELETE("/v2/questions/{qid}/answers/{uid}")
+    suspend fun deleteAnswer(@Path("qid") qid: LocalDate, @Path("uid") uid: String? = AuthManager.uid): Response<Unit>
 }

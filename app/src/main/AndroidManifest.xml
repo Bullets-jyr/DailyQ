@@ -15,7 +15,25 @@
         android:theme="@style/Theme.DailyQ"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-        <!-- 소프트 키보드가 표시됐을 때 레이아웃의 크기를 조절하기 위해 windowSoftInputMode에 adjustResize를 사용했습니다. -->
+        <!-- 앱이 스플래시부터 시작하도록 AndroidMainfest.xml에서 LoginActivity의 인텐트 필터를 삭제하고 SplashActivity에 추가합니다. -->
+        <!-- SplashActivity는 앱바를 사용하지 않습니다. -->
+        <!-- 앱바를 사용하지 않는 Theme.DailyQ.NoActionBar 테마를 만들어 <activity> 의 theme 속성에 적용합니다. -->
+        <activity
+            android:name=".ui.splash.SplashActivity"
+            android:theme="@style/Theme.DailyQ.NoActionBar"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!-- MainActivity가 아니라 LoginActivity에서 앱을 시작하도록 수정합니다. -->
+        <!-- [코드 6-9]에서 MainActivity의 인텐트 필터를 삭제하고 LoginActivity에 추가했습니다. -->
+        <activity
+            android:name=".ui.login.LoginActivity"
+            android:exported="false">
+        </activity> <!-- 소프트 키보드가 표시됐을 때 레이아웃의 크기를 조절하기 위해 windowSoftInputMode에 adjustResize를 사용했습니다. -->
         <activity
             android:name=".ui.write.WriteActivity"
             android:exported="false"
@@ -25,13 +43,7 @@
             android:exported="false" />
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:exported="false"></activity>
     </application>
 
 </manifest>

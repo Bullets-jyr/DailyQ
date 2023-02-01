@@ -14,11 +14,23 @@ class AuthInterceptor : Interceptor {
         val request = chain.request()
         val builder = request.newBuilder()
 
-        Log.d("Authorization", "Bearer ${AuthManager.accessToken}")
+        // [코드 6-20]의 AuthInterceptor에서는 request 객체의 tag() 메서드로 가져오려는 타입을 전달해 인자로 전달된 값을 가져오는 것을 볼 수 있습니다.
+        // Daily Q API는 대부분 액세스 토큰이 필요하기 때문에 AuthType.ACCESS_TOKEN을 기본값으로 정하고
+        // authTypedl AuthType.ACCESS_TOKEN인 경우에만 Authorization 헤더를 추가하겠습니다.
+        val authType = request.tag(AuthType::class.java) ?: AuthType.ACCESS_TOKEN
 
-        AuthManager.accessToken?.let { token ->
-            builder.header("Authorization", "Bearer $token")
+        when (authType) {
+            AuthType.NO_AUTH -> {
+                Log.d("okhttp", "AuthType.NO_AUTH")
+            }
+            AuthType.ACCESS_TOKEN -> {
+                Log.d("okhttp", "AuthType.ACCESS_TOKEN")
+                AuthManager.accessToken?.let { token ->
+                    builder.header("Authorization", "Bearer $token")
+                }
+            }
         }
+
         return chain.proceed(builder.build())
     }
 }

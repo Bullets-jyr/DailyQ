@@ -34,11 +34,12 @@ interface ApiService {
 
             return builder
                 .connectTimeout(3, TimeUnit.SECONDS)
-                .writeTimeout(3, TimeUnit.SECONDS)
-                .readTimeout(3, TimeUnit.SECONDS)
+                .writeTimeout(10, TimeUnit.SECONDS)
+                .readTimeout(10, TimeUnit.SECONDS)
                 // AuthInterceptor는 애플리케이션 인터셉터로 등록하겠습니다. [코드 6-15]처럼 OkHttp Client.Builder의
                 // addInterceptor() 메서드로 추가합니다. 네트워크 인터셉터를 추가하고 싶다면 addNetworkInterceptor() 메서드를 사용합니다.
                 .addInterceptor(AuthInterceptor())
+                .authenticator(TokenRefreshAuthenticator())
                 .addInterceptor(logging)
                 .build()
         }
@@ -57,8 +58,8 @@ interface ApiService {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 // Retrofit으로 요청을 보낼 때 LocalDate를 변환할 수 있도록 LocalDateConverterFactory를 만들어서 등록했지만,
                 .addConverterFactory(LocalDateConverterFactory())
-//                .baseUrl("http://192.168.0.105:8080")
-                .baseUrl("http://192.168.1.169:8080")
+                .baseUrl("http://192.168.0.105:8080")
+//                .baseUrl("http://192.168.1.169:8080")
                 .client(okHttpClient())
                 .build()
                 .create(ApiService::class.java)
@@ -122,11 +123,11 @@ interface ApiService {
 
     @FormUrlEncoded
     @POST("/v2/token")
-    suspend fun login(@Field("username") uid: String, @Field("password") password: String, @Field("grant_type") grantType: String = "password"): Response<AuthToken>
+    suspend fun login(@Field("username") uid: String, @Field("password") password: String, @Field("grant_type") grantType: String = "password", @Tag authType: AuthType = AuthType.NO_AUTH): Response<AuthToken>
 
     @FormUrlEncoded
     @POST("/v2/token")
-    suspend fun refreshToken(@Field("refresh_token") refreshToken: String, @Field("grant_type") grantType: String = "refresh_token"): Call<AuthToken>
+    fun refreshToken(@Field("refresh_token") refreshToken: String, @Field("grant_type") grantType: String = "refresh_token", @Tag authType: AuthType = AuthType.NO_AUTH): Call<AuthToken>
 
     @GET("v2/questions/{qid}")
 //    suspend fun getQuestion(@Path("qid") qid: String): Question

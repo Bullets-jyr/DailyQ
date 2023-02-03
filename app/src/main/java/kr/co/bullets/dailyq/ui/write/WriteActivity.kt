@@ -102,6 +102,7 @@ class WriteActivity : BaseActivity() {
             binding.answer.setText(answer?.text)
 
             imageUrl = answer?.photo
+//            imageUrl = "http:/192.168.1.169:8080/v2/images/3fb0b977a5504eb28151c490fc5b2926"
             binding.photoArea.isVisible = !imageUrl.isNullOrEmpty()
 
             imageUrl?.let {
@@ -154,11 +155,13 @@ class WriteActivity : BaseActivity() {
         lifecycleScope.launch {
             val answerResponse = if (answer == null) {
                 Log.d("write", "api.writeAnswer, ${question.id}")
+                Log.d("write", "imageUrl, $imageUrl")
 
                 // writeAnswer와 editAnswer의 마지막에 imageUrl을 전달합니다.
                 api.writeAnswer(question.id, text, imageUrl)
             } else {
                 Log.d("write", "api.editAnswer, ${question.id}")
+                Log.d("write", "imageUrl, $imageUrl")
 
                 // writeAnswer와 editAnswer의 마지막에 imageUrl을 전달합니다.
                 api.editAnswer(question.id, text, imageUrl)

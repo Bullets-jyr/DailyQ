@@ -3,18 +3,21 @@ package kr.co.bullets.dailyq.ui.today
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import coil.load
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 import kr.co.bullets.dailyq.R
 import kr.co.bullets.dailyq.api.response.Question
 import kr.co.bullets.dailyq.databinding.FragmentTodayBinding
 import kr.co.bullets.dailyq.ui.base.BaseFragment
+import kr.co.bullets.dailyq.ui.image.ImageViewerActivity
 import kr.co.bullets.dailyq.ui.write.WriteActivity
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -189,5 +192,23 @@ class TodayFragment : BaseFragment() {
         binding.textAnswer.text = answer?.text
 
         binding.writeButton.isVisible = answer == null
+
+        // 이미지 확대, 축소 기능은 TodayFragment를 만든 후 같이 확인하겠습니다.
+        // TodayFragment에서는 answer가 있을 때 photoAnswer에 이미지를 표시하고, 터치했을 때
+        // ImageViewerActivity를 URL에 전달하며 시작합니다.
+        binding.photoAnswer.isVisible = !answer?.photo.isNullOrEmpty()
+        Log.d("TodayFragment", "${answer?.photo}")
+        answer?.photo?.let {
+            binding.photoAnswer.load(it) {
+//            binding.photoAnswer.load("http:/192.168.1.169:8080/v2/images/3fb0b977a5504eb28151c490fc5b2926") {
+                placeholder(R.drawable.ph_image)
+            }
+            binding.photoAnswer.setOnClickListener {
+                startActivity(Intent(requireContext(), ImageViewerActivity::class.java).apply {
+                    putExtra(ImageViewerActivity.EXTRA_URL, answer.photo)
+//                    putExtra(ImageViewerActivity.EXTRA_URL, "http:/192.168.1.169:8080/v2/images/3fb0b977a5504eb28151c490fc5b2926")
+                })
+            }
+        }
     }
 }

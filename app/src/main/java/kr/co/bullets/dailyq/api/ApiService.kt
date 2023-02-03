@@ -145,7 +145,7 @@ interface ApiService {
 
     @FormUrlEncoded
     @PUT("/v2/questions/{qid}/answers/{uid}")
-    suspend fun editAnswer(@Path("qid") qid: LocalDate, @Field("text") text: String? = null, @Field("photo") photo: String? = null, @Field("uid") uid: String? = "anonymous"): Response<Answer>
+    suspend fun editAnswer(@Path("qid") qid: LocalDate, @Field("text") text: String? = null, @Field("photo") photo: String? = null, @Field("uid") uid: String? = AuthManager.uid): Response<Answer>
 
     @DELETE("/v2/questions/{qid}/answers/{uid}")
     suspend fun deleteAnswer(@Path("qid") qid: LocalDate, @Path("uid") uid: String? = AuthManager.uid): Response<Unit>

@@ -18,4 +18,15 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
+
+    <!-- 마지막으로 앱바 뒤로 이미지가 보일 수 있게 만들고 상태 표시줄을 숨기기 위해 이미지 뷰어를 위한 테마를 만들겠습니다. -->
+    <style name="Theme.DailyQ.ImageViewer">
+        <item name="android:windowFullscreen">true</item>
+        <item name="actionBarStyle">@style/Theme.DailyQ.Dark.ActionBar</item>
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+
+    <style name="Theme.DailyQ.Dark.ActionBar" parent="Widget.MaterialComponents.ActionBar.Solid">
+        <item name="background">@color/transparent_bar</item>
+    </style>
 </resources>

@@ -10,4 +10,6 @@
     <dimen name="qa_height">160dp</dimen>
     <dimen name="thumbnail_size">56dp</dimen>
     <dimen name="divider">1dp</dimen>
+
+    <dimen name="thumbnail_rounded_corner">4dp</dimen>
 </resources>

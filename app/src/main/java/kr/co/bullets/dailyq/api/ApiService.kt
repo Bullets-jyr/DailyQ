@@ -8,7 +8,9 @@ import kr.co.bullets.dailyq.api.adapter.LocalDateAdapter
 import kr.co.bullets.dailyq.api.converter.LocalDateConverterFactory
 import kr.co.bullets.dailyq.api.response.Answer
 import kr.co.bullets.dailyq.api.response.AuthToken
+import kr.co.bullets.dailyq.api.response.Image
 import kr.co.bullets.dailyq.api.response.Question
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -58,8 +60,8 @@ interface ApiService {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 // Retrofit으로 요청을 보낼 때 LocalDate를 변환할 수 있도록 LocalDateConverterFactory를 만들어서 등록했지만,
                 .addConverterFactory(LocalDateConverterFactory())
-                .baseUrl("http://192.168.0.105:8080")
-//                .baseUrl("http://192.168.1.169:8080")
+//                .baseUrl("http://192.168.0.105:8080")
+                .baseUrl("http://192.168.1.169:8080")
                 .client(okHttpClient())
                 .build()
                 .create(ApiService::class.java)
@@ -147,4 +149,9 @@ interface ApiService {
 
     @DELETE("/v2/questions/{qid}/answers/{uid}")
     suspend fun deleteAnswer(@Path("qid") qid: LocalDate, @Path("uid") uid: String? = AuthManager.uid): Response<Unit>
+
+    // Image를 응답으로 갖는 uploadImage() 메서드([코드 7-3])를 선언합니다.
+    @Multipart
+    @POST("/v2/images")
+    suspend fun uploadImage(@Part image: MultipartBody.Part): Response<Image>
 }

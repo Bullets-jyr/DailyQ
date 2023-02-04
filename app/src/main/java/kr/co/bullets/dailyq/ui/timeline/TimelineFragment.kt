@@ -33,9 +33,15 @@ class TimelineFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // [코드 8-13]에서 이 어댑터를 사용하도록 TimelineFragment를 수정합니다.
+        // 어댑터를 설정하는 기존의 코드를 제거하고 withLoadStateFooter() 메서드로 TimelineAdapter에
+        // TimelineLoadStateAdapter를 결합해서 만들어진 ConcatAdapter를 RecyclerView로 설정하는 것만으로 모든 작업이 끝납니다.
         binding.apply {
             adapter = TimelineAdapter(requireContext())
-            recycler.adapter = adapter
+//            recycler.adapter = adapter
+            recycler.adapter = adapter.withLoadStateFooter(TimelineLoadStateAdapter {
+                adapter.retry()
+            })
             recycler.layoutManager = LinearLayoutManager(context)
         }
 

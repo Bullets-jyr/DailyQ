@@ -7,6 +7,10 @@
     <dimen name="margin_small">8dp</dimen>
     <dimen name="margin_xsmall">4dp</dimen>
 
+    <!-- 디자인 가이드에서 프로필 사진의 크기는 48x48dp입니다. -->
+    <!-- 프로필 사진은 여러 화면에서 같은 크기로 사용하기 때문에 dimens.xml에 등록합니다. -->
+    <dimen name="user_photo_normal">48dp</dimen>
+
     <dimen name="qa_height">160dp</dimen>
     <dimen name="thumbnail_size">56dp</dimen>
     <dimen name="divider">1dp</dimen>

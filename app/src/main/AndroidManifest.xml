@@ -15,14 +15,16 @@
         android:theme="@style/Theme.DailyQ"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.details.DetailsActivity"
+            android:exported="false" />
         <!-- 이제 AndroidManifest.xml에 ImageViewerActivity를 등록합니다. -->
         <!-- 앱바에 아이콘만 표시하기 위해 label을 빈 문자열로 설정했습니다. -->
         <activity
-            android:theme="@style/Theme.DailyQ.ImageViewer"
-            android:label=""
             android:name=".ui.image.ImageViewerActivity"
-            android:exported="false" />
-        <!-- 앱이 스플래시부터 시작하도록 AndroidMainfest.xml에서 LoginActivity의 인텐트 필터를 삭제하고 SplashActivity에 추가합니다. -->
+            android:exported="false"
+            android:label=""
+            android:theme="@style/Theme.DailyQ.ImageViewer" /> <!-- 앱이 스플래시부터 시작하도록 AndroidMainfest.xml에서 LoginActivity의 인텐트 필터를 삭제하고 SplashActivity에 추가합니다. -->
         <!-- SplashActivity는 앱바를 사용하지 않습니다. -->
         <!-- 앱바를 사용하지 않는 Theme.DailyQ.NoActionBar 테마를 만들어 <activity> 의 theme 속성에 적용합니다. -->
         <activity
@@ -38,7 +40,7 @@
         <!-- [코드 6-9]에서 MainActivity의 인텐트 필터를 삭제하고 LoginActivity에 추가했습니다. -->
         <activity
             android:name=".ui.login.LoginActivity"
-            android:exported="false"></activity> <!-- 소프트 키보드가 표시됐을 때 레이아웃의 크기를 조절하기 위해 windowSoftInputMode에 adjustResize를 사용했습니다. -->
+            android:exported="false" /> <!-- 소프트 키보드가 표시됐을 때 레이아웃의 크기를 조절하기 위해 windowSoftInputMode에 adjustResize를 사용했습니다. -->
         <activity
             android:name=".ui.write.WriteActivity"
             android:exported="false"

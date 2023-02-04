@@ -150,6 +150,10 @@ interface ApiService {
     @PUT("/v2/questions/{qid}/answers/{uid}")
     suspend fun editAnswer(@Path("qid") qid: LocalDate, @Field("text") text: String? = null, @Field("photo") photo: String? = null, @Field("uid") uid: String? = AuthManager.uid): Response<Answer>
 
+    // 상세보기에서는 질문의 모든 답을 가져와 표시합니다. '답 목록 가져오기' API를 추가합니다.
+    @GET("/v2/questions/{qid}/answers")
+    suspend fun getAnswers(@Path("qid") qid: LocalDate): Response<List<Answer>>
+
     @DELETE("/v2/questions/{qid}/answers/{uid}")
     suspend fun deleteAnswer(@Path("qid") qid: LocalDate, @Path("uid") uid: String? = AuthManager.uid): Response<Unit>
 

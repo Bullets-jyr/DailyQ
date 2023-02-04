@@ -1,9 +1,11 @@
 package kr.co.bullets.dailyq.ui.timeline
 
+import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import kr.co.bullets.dailyq.R
 import kr.co.bullets.dailyq.api.response.Question
 import kr.co.bullets.dailyq.databinding.ItemTimelineCardBinding
+import kr.co.bullets.dailyq.ui.details.DetailsActivity
 import java.time.format.DateTimeFormatter
 
 // 다음으로 RecyclerView에서 사용할 TimelineCardViewHolder를 만듭니다.
@@ -27,6 +29,12 @@ class TimelineCardViewHolder(val binding: ItemTimelineCardBinding) : RecyclerVie
 
         binding.card.setOnClickListener {
             // TODO 상세 화면으로 이동
+            // 마지막으로 타임라인에서 상세보기를 시작할 수 있게 TimelineCardViewHolder에 비워덨던 OnClickListener를 구현합니다.
+            val context = binding.root.context
+
+            context.startActivity(Intent(context, DetailsActivity::class.java).apply {
+                putExtra(DetailsActivity.EXTRA_QID, question.id)
+            })
         }
     }
 }

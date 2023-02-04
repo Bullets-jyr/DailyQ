@@ -60,8 +60,8 @@ interface ApiService {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 // Retrofit으로 요청을 보낼 때 LocalDate를 변환할 수 있도록 LocalDateConverterFactory를 만들어서 등록했지만,
                 .addConverterFactory(LocalDateConverterFactory())
-//                .baseUrl("http://192.168.0.105:8080")
-                .baseUrl("http://192.168.1.169:8080")
+                .baseUrl("http://192.168.0.110:8080")
+//                .baseUrl("http://192.168.1.169:8080")
                 .client(okHttpClient())
                 .build()
                 .create(ApiService::class.java)
@@ -130,6 +130,9 @@ interface ApiService {
     @FormUrlEncoded
     @POST("/v2/token")
     fun refreshToken(@Field("refresh_token") refreshToken: String, @Field("grant_type") grantType: String = "refresh_token", @Tag authType: AuthType = AuthType.NO_AUTH): Call<AuthToken>
+
+    @GET("/v2/questions")
+    suspend fun getQuestions(@Query("from_date") fromDate: LocalDate, @Query("page_size") pageSize: Int): Response<List<Question>>
 
     @GET("v2/questions/{qid}")
 //    suspend fun getQuestion(@Path("qid") qid: String): Question

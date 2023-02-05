@@ -10,6 +10,7 @@ import kr.co.bullets.dailyq.api.response.Answer
 import kr.co.bullets.dailyq.api.response.AuthToken
 import kr.co.bullets.dailyq.api.response.Image
 import kr.co.bullets.dailyq.api.response.Question
+import okhttp3.Cache
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -29,20 +30,57 @@ interface ApiService {
         // 싱글톤 인스턴스를 보관할 INSTANCE 변수
         private var INSTANCE: ApiService? = null
 
-        private fun okHttpClient(): OkHttpClient {
+        // 이제 [코드 9-14]를 보고 캐시를 사용하도록 설정합니다. okHttpClient() 메서드에 Context 매개변수가 추가됐습니다.
+        private fun okHttpClient(context: Context): OkHttpClient {
             val builder = OkHttpClient.Builder()
             val logging = HttpLoggingInterceptor()
             logging.level = HttpLoggingInterceptor.Level.BODY
+
+            // 캐시가 저장될 위치와 사용할 크기를 생성자로 전달해 Cache를 생성하고,
+            // OkHttpClient.Builder의 cache() 메서드로 전달함으로써 캐시를 사용하기 위한 설정이 끝납니다.
+            val cacheSize = 5 * 1024 * 1024L // 5 MB
+            val cache = Cache(context.cacheDir, cacheSize)
 
             return builder
                 .connectTimeout(3, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(10, TimeUnit.SECONDS)
+                // 앱을 시작하고 타임라인에서 질문을 선택해 상세보기 화면으로 돌아오면 로그가 출력됩니다.
+                // 다시 타임라인으로 돌아갔다가 같은 질문을 선택해 상세보기에서 로그를 확인합니다.
+                // 이제 상세보기로 두 번 진입했습니다.
+                // 처음 상세보기로 진입했을 때 ETag로 캐시가 저장되었기 때문에 두 번째 진입 로그는 조금 다른 것을 볼 수 있습니다.
+                // 5)는 Daily Q에서 보내는 요청으로 1)과 다르지 않습니다.
+                // 6)의 NetworkInterceptor 요청에는 If-None-Match 헤더가 추가된 것을 볼 수 있습니다. 캐시에 저장된 응답에 ETag가 있기 때문에 Okhttp의 CacheInterceptor가 추가를 한 것입니다.
+                // 7)에서는 서버가 If-None-Match로 전달된 ETag를 확인하고 응답 메시지에 변경이 없다면 본문 없이 304 Not Modified 응답을 보냅니다. NetworkInterceptor의 응답 로그에서 304를 확인할 수 있습니다.
+                // 8) AppInterceptor의 응답 로그는 7)의 NetworkInterceptor의 응답 로그에서 304를 확인할 수 있습니다.
+                // 상세보기 기능을 만들고 Retrofit이(정확히는 OkHttp에) 캐시를 사용하도록 설정해 요청과 응답이 어떻게 달라지는지 보았습니다.
+                // 캐시를 사용하기 위해 작성한 코드는 [코드 9-14]의 세 줄이 전부입니다.
+                // HTTP 캐시는 라이브러리의 지원으로 쉽게 사용할 수 있지만 GET 요청의 응답만을 캐시하고, 캐싱한 리소스를 사용하려면 HTTP 요청을 통해서만 가져올 수 있다는 한계가 있습니다.
+                // 10장에서는 로컬 데이터베이스를 캐시로 사용해 HTTP 캐시를 보완하고 일부 기능을 오프라인에서도 사용할 수 있도록 만들겠습니다.
+                .cache(cache)
                 // AuthInterceptor는 애플리케이션 인터셉터로 등록하겠습니다. [코드 6-15]처럼 OkHttp Client.Builder의
                 // addInterceptor() 메서드로 추가합니다. 네트워크 인터셉터를 추가하고 싶다면 addNetworkInterceptor() 메서드를 사용합니다.
                 .addInterceptor(AuthInterceptor())
                 .authenticator(TokenRefreshAuthenticator())
                 .addInterceptor(logging)
+                // EndpointLoggingInterceptor는 생성자로 인터셉터의 위치를 구분할 이름과 확인하려는 API URL의 접미사를 전달합니다.
+                // OkHttpClient.Builder에 addInterceptor()와 addNetworkInterceptor() 메서드로 등록합니다.
+                // 우리가 확인할 로그는 AppInterceptor에서의 요청과 응답, NetworkInterceptor에서의 요청과 응답으로 총 4가지입니다.
+                // HttpLoggingInterceptor와 마찬가지로 로그의 시작이 '-->'이면 요청, '<--'이면 응답입니다. 로그의 순서는 다음과 같습니다.
+                // 1) AppInterceptor에서 요청
+                // 2) NetworkInterceptor에서 요청
+                // 3) NetworkInterceptor에서 응답
+                // 4) AppInterceptor에서 응답
+                // 로그캣 필터에 'DailyQ_answers'를 입력하고 앱을 실행해 상세보기로 이동하면 요청과 응답 로그를 볼 수 있습니다.
+                // 다음의 로그에서는 시간과 패키지, 태그 정보는 가독성을 위해 생략했습니다.
+                // 주목해서 볼 것은 첫 번째로 3)의 네트워크 인터셉터 응답에 ETag가 있다는 것입니다.
+                // 하지만 아직 캐시를 사용하도록 준비하지 않았기 때문에 타임라인으로 나갔다가 다시 상세보기로 돌아와도 요청과 응답이 달라지지 않습니다.
+                // 둘째로 3),4)의 Response Code에 세 개의 값이 있다는 것입니다.
+                // 첫 번째 코드는 Response 객체에서 바로 가져온 값이고, 두 번째는 네트워크, 세 번째는 캐시에서 가져왔습니다.
+                // 이 값들이 어떻게 다른지 캐시를 사용하면서 알아보겠습니다.
+                // Response code: ${response.code} (Network: ${response.networkResponse?.code}, Cache: ${response.cacheResponse?.code})
+                .addInterceptor(EndpointLoggingInterceptor("AppInterceptor", "answers"))
+                .addNetworkInterceptor(EndpointLoggingInterceptor("NetworkInterceptor", "answers"))
                 .build()
         }
 
@@ -62,7 +100,7 @@ interface ApiService {
                 .addConverterFactory(LocalDateConverterFactory())
                 .baseUrl("http://192.168.0.110:8080")
 //                .baseUrl("http://192.168.1.169:8080")
-                .client(okHttpClient())
+                .client(okHttpClient(context))
                 .build()
                 .create(ApiService::class.java)
         }

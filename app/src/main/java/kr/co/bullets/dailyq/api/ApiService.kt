@@ -6,10 +6,7 @@ import com.google.gson.GsonBuilder
 import kr.co.bullets.dailyq.AuthManager
 import kr.co.bullets.dailyq.api.adapter.LocalDateAdapter
 import kr.co.bullets.dailyq.api.converter.LocalDateConverterFactory
-import kr.co.bullets.dailyq.api.response.Answer
-import kr.co.bullets.dailyq.api.response.AuthToken
-import kr.co.bullets.dailyq.api.response.Image
-import kr.co.bullets.dailyq.api.response.Question
+import kr.co.bullets.dailyq.api.response.*
 import okhttp3.Cache
 import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
@@ -98,8 +95,8 @@ interface ApiService {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 // Retrofit으로 요청을 보낼 때 LocalDate를 변환할 수 있도록 LocalDateConverterFactory를 만들어서 등록했지만,
                 .addConverterFactory(LocalDateConverterFactory())
-                .baseUrl("http://192.168.0.110:8080")
-//                .baseUrl("http://192.168.1.169:8080")
+//                .baseUrl("http://192.168.0.110:8080")
+                .baseUrl("http://192.168.1.26:8080")
                 .client(okHttpClient(context))
                 .build()
                 .create(ApiService::class.java)
@@ -199,4 +196,17 @@ interface ApiService {
     @Multipart
     @POST("/v2/images")
     suspend fun uploadImage(@Part image: MultipartBody.Part): Response<Image>
+
+    @GET("/v2/users/{uid}")
+    suspend fun getUser(@Path("uid") uid: String): Response<User>
+
+    // '팔로우'와 '팔로우 취소' API는 응답에 본문 없이 없기 때문에 Response의 타입 매개변수를 Unit으로 합니다.
+    @POST("/v2/user/following/{uid}")
+    suspend fun follow(@Path("uid") uid: String): Response<Unit>
+
+    @DELETE("/v2/user/following/{uid}")
+    suspend fun unfollow(@Path("uid") uid: String): Response<Unit>
+
+    @GET("/v2/users/{uid}/answers")
+    suspend fun getUserAnswers(@Path("uid") uid: String, @Query("from_date") fromDate: LocalDate? = null): Response<List<QuestionAndAnswer>>
 }

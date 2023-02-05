@@ -28,4 +28,11 @@
     <string name="answer_count_format">%d명이 답했습니다</string>
     <string name="no_answer_yet">아무도 답을 하지 않았습니다...</string>
     <string name="retry">재시도</string>
+
+    <string name="answer">답</string>
+    <string name="follower">팔로워</string>
+    <string name="following">팔로잉</string>
+    <string name="follow">팔로우</string>
+    <string name="unfollow">언팔로우</string>
+    <string name="me">나</string>
 </resources>

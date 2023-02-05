@@ -10,6 +10,7 @@ import kr.co.bullets.dailyq.R
 import kr.co.bullets.dailyq.api.response.Answer
 import kr.co.bullets.dailyq.databinding.ItemAnswerBinding
 import kr.co.bullets.dailyq.ui.image.ImageViewerActivity
+import kr.co.bullets.dailyq.ui.profile.ProfileActivity
 
 // online.dailyq.ui.details 패키지를 추가하고 [코드 9-7]의 AnswerViewHolder를 만듭니다.
 // 사용자가 답을 쓴 시간은 경과 시간으로 표시하는데, DataUtils에 준비되어 있는 getRelativeTimeString() 메서드를 사용합니다.
@@ -27,6 +28,13 @@ class AnswerViewHolder(val binding: ItemAnswerBinding) : RecyclerView.ViewHolder
                 error(R.drawable.ph_user)
                 transformations(CircleCropTransformation())
             }
+        }
+
+        binding.userPhoto.setOnClickListener {
+            val context = itemView.context
+            context.startActivity(Intent(context, ProfileActivity::class.java).apply {
+                putExtra(ProfileActivity.EXTRA_UID, answer.answerer?.id)
+            })
         }
 
         binding.textAnswer.text = answer.text

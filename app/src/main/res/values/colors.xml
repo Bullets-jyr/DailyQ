@@ -11,4 +11,6 @@
     <!-- 앱바는 반투명으로 앱바의 하얀색 아이콘과 앱바 아래의 이미지가 보여야 합니다. -->
     <!-- 디자인 가이드에서 지정한 검은색을 50% 투명으로 추가합니다. -->
     <color name="transparent_bar">#80000000</color>
+    <color name="follow_button">#004ecb</color>
+    <color name="unfollow_button">#f44336</color>
 </resources>

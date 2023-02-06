@@ -1,6 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    // Room을 사용하기 위해서 [코드 10-21]처럼 의존성을 추가합니다.
+    // Room은 어노체이션 프로세서에서 코드를 생성하기 때문에 plugins 블록에 kotlin-kapt 플러그인도 추가합니다.
+    // 어노테이션 프로세서는 컴파일을 할 때 어노테이션에 따라 코드를 검사하거나 새로운 코드를 작성하는 등의 작업을 할 수 있는 도구입니다.
+    id 'kotlin-kapt'
 }
 
 android {
@@ -54,6 +58,13 @@ dependencies {
 //    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.5.1"
     implementation 'io.coil-kt:coil:2.2.2'
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    // Room은 RoomDatabase를 관리하는 Database, Entity, DAO로 구성됩니다.
+    // DAO에서 Entity를 사용하고 Database는 DAO와 Entity를 모두 사용하기 때문에 Entity, DAO, Database의 순서로 만들겠습니다.
+    implementation 'androidx.room:room-runtime:2.5.0'
+    implementation 'androidx.room:room-ktx:2.5.0'
+    implementation 'androidx.room:room-paging:2.5.0'
+    kapt 'androidx.room:room-compiler:2.5.0'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'

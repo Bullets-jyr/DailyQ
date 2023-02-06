@@ -2,6 +2,7 @@ package kr.co.bullets.dailyq
 
 import android.app.Application
 import kr.co.bullets.dailyq.api.ApiService
+import kr.co.bullets.dailyq.db.AppDatabase
 
 class App : Application() {
 
@@ -11,5 +12,6 @@ class App : Application() {
 
         AuthManager.init(this)
         ApiService.init(this)
+        AppDatabase.init(this)
     }
 }

@@ -1,9 +1,6 @@
 package kr.co.bullets.dailyq.db.dao
 
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
-import androidx.room.Update
+import androidx.room.*
 import kr.co.bullets.dailyq.db.entity.UserEntity
 
 // DAO는 Data Access Object의 두문자어로 데이터베이스에 접근해 데이터를 가져오거나 변경하는 역할을 합니다.
@@ -44,6 +41,8 @@ import kr.co.bullets.dailyq.db.entity.UserEntity
 // fun getLiveData(): LiveData<List<UserEntity>>
 // @Query("SELECT * FROM user")
 // fun getPagingSource(): PagingSource<Int, UserEntity>
+
+@Dao
 interface UserDao {
 
     @Insert

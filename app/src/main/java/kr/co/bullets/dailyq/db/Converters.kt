@@ -1,6 +1,7 @@
 package kr.co.bullets.dailyq.db
 
 import androidx.room.TypeConverter
+import java.time.LocalDate
 import java.util.*
 
 // UserEntity의 updatedAt 필드는 기본 자료형이 아닌 Date 타입을 사용했습니다.
@@ -19,5 +20,18 @@ class Converters {
     @TypeConverter
     fun toLong(value: Date?): Long? {
         return value?.time
+    }
+
+    // QuestionEntity.id의 타입인 LocalDate는 Room에서 지원하지 않는 타입입니다.
+    // Date와 마찬가지로 Room에서 변환해 저장하고 불러올 수 있도록 Converters에 두 개의 메서드를 만들고
+    // @TypeConverter 어노테이션을 붙여줍니다.
+    @TypeConverter
+    fun toLocalDate(value: String?): LocalDate? {
+        return if (value == null) null else LocalDate.parse(value)
+    }
+
+    @TypeConverter
+    fun toString(value: LocalDate?): String? {
+        return value?.toString()
     }
 }

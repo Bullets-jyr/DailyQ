@@ -5,7 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import kr.co.bullets.dailyq.db.dao.QuestionDao
 import kr.co.bullets.dailyq.db.dao.UserDao
+import kr.co.bullets.dailyq.db.entity.QuestionEntity
 import kr.co.bullets.dailyq.db.entity.UserEntity
 
 // Room의 데이터베이스는 RoomDatabase를 확장한 클래스에 @Database 어노테이션을 붙여 지정할 수 있습니다.
@@ -19,11 +21,13 @@ import kr.co.bullets.dailyq.db.entity.UserEntity
 // Appdatabase_Impl.java를 생성합니다. AppDatabase 클래스를 Room.databaseBuilder로 넘겨 인스턴스를 만들어 사용하면 되는데,
 // 이 과정이 다소 무거운 작업이고 앱을 작동하는 동안 Room은 계속 필요하기 때문에 싱글톤으로 만들어 사용하는 것을 권장합니다.
 // 5장에서 ApiService를 싱글톤으로 만들었던 것 처럼 AppDatabase도 싱글톤으로 만들겠습니다.
-@Database(entities = [UserEntity::class], version = 1)
+// [코드 10-33]과 같이 AppDatabase에 QuestionEntity를 등록하고, QuestionDao를 반환하는 메서드를 선언합니다.
+@Database(entities = [UserEntity::class, QuestionEntity::class], version = 1)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun getUserDao(): UserDao
+    abstract fun getQuestionDao(): QuestionDao
 
     // [코드 10-26]에서는 싱글톤을 만들 때 자주 사용되는 더블 체크 락킹(Double-checked locking) 패턴을 사용했습니다.
     // 이 방법은 5장에서 만든 싱글톤 관리 코드와 다르게 초기화 메서드가 필요 없고, getInstance() 메서드가 생성과 가져오는 역할을 모두 합니다.
@@ -43,7 +47,17 @@ abstract class AppDatabase : RoomDatabase() {
                 context.applicationContext,
                 AppDatabase::class.java,
                 FILENAME
-            ).build()
+            // Room의 스키마가 변경되었기 때문에 QuestionDao로 QuestionDao로 QuestionEntity를 사용하려고 하면 다음의 오류가 발생합니다.
+            // java.lang.IllegalStateException: Room cannot verify the data integrity.
+            // Looks like you've changed schema but forgot to update the version number.
+            // You can simply fix this by increasing the version number.
+            // 스키마가 변경되면 마이그레이션 코드를 작성하거나 데이터베이스를 삭제하고 다시 시작해야 합니다.
+            // 개발 과정에서는 스키마가 변경되는 일이 많으므로 데이터베이스를 삭제하고 다시 시작합니다.
+            // [코드 10-34]처럼 Room 생성 시 fallbackToDestructiveMigration() 빌더 메서드를 호출하면 마이그레이션이 실패했을 때
+            // 테이블을 모두 삭제하고 다시 테이블을 만듭니다.
+            // 개발 과정에서 사용하기 편하지만 데이터도 모두 삭제되니 주의해서 사용해야 합니다.
+            ).fallbackToDestructiveMigration()
+                .build()
         }
 
 //        fun getInstance(context: Context): AppDatabase = INSTANCE ?:

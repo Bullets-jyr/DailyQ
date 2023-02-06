@@ -95,8 +95,8 @@ interface ApiService {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 // Retrofit으로 요청을 보낼 때 LocalDate를 변환할 수 있도록 LocalDateConverterFactory를 만들어서 등록했지만,
                 .addConverterFactory(LocalDateConverterFactory())
-//                .baseUrl("http://192.168.0.110:8080")
-                .baseUrl("http://192.168.1.26:8080")
+                .baseUrl("http://192.168.0.106:8080")
+//                .baseUrl("http://192.168.1.26:8080")
                 .client(okHttpClient(context))
                 .build()
                 .create(ApiService::class.java)

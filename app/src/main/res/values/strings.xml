@@ -35,4 +35,10 @@
     <string name="follow">팔로우</string>
     <string name="unfollow">언팔로우</string>
     <string name="me">나</string>
+
+    <!-- 메시지를 받았을 때 안드로이드의 알림으로 표시하기 위해 [코드 11-5], [코드 11-6]을 작성합니다. -->
+    <string name="noti_answer_channel">답글 알림</string>
+    <string name="noti_follow_channel">팔로우 알림</string>
+    <string name="noti_answer_msg">%1$s님이 오늘의 질문에 답했습니다.</string>
+    <string name="noti_follow_msg">%1$s님이 나를 팔로우합니다.</string>
 </resources>

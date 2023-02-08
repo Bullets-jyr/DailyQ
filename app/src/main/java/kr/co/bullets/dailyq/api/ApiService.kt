@@ -166,6 +166,11 @@ interface ApiService {
     @POST("/v2/token")
     fun refreshToken(@Field("refresh_token") refreshToken: String, @Field("grant_type") grantType: String = "refresh_token", @Tag authType: AuthType = AuthType.NO_AUTH): Call<AuthToken>
 
+    // FCM 백엔드에서 발급받은 토큰을 API 서버 전달하기 위한 '푸시 토큰 등록' API를 추가합니다.
+    @FormUrlEncoded
+    @POST("/v2/user/push-tokens")
+    suspend fun registerPushToken(@Field("token") pushToken: String): Response<Unit>
+
     @GET("/v2/questions")
     suspend fun getQuestions(@Query("from_date") fromDate: LocalDate, @Query("page_size") pageSize: Int): Response<List<Question>>
 

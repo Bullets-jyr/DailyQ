@@ -3,12 +3,15 @@ package kr.co.bullets.dailyq.ui.login
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import kr.co.bullets.dailyq.AuthManager
 import kr.co.bullets.dailyq.R
 import kr.co.bullets.dailyq.databinding.ActivityLoginBinding
@@ -105,6 +108,13 @@ class LoginActivity : BaseActivity() {
                     AuthManager.uid = uid
                     AuthManager.accessToken = authToken?.accessToken
                     AuthManager.refreshToken = authToken?.refreshToken
+
+                    // FCM SDK는 앱을 시작할 때 자동으로 등록 토큰을 생성합니다.
+                    // 로그인을 한 후 FirebaseMessaging.getInstance().geToken() 메서드로 등록 토큰을 가져와 API 서버로 전달합니다.
+                    // 그리고 코루틴에서 사용하기 위해 중단 await()을 사용했습니다.
+                    val messagingToken = FirebaseMessaging.getInstance().token.await()
+                    Log.d("messagingToken :: ", "$messagingToken")
+                    api.registerPushToken(messagingToken)
 
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()

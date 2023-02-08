@@ -5,6 +5,7 @@ plugins {
     // Room은 어노체이션 프로세서에서 코드를 생성하기 때문에 plugins 블록에 kotlin-kapt 플러그인도 추가합니다.
     // 어노테이션 프로세서는 컴파일을 할 때 어노테이션에 따라 코드를 검사하거나 새로운 코드를 작성하는 등의 작업을 할 수 있는 도구입니다.
     id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -74,6 +75,11 @@ dependencies {
     implementation 'androidx.room:room-ktx:2.5.0'
     implementation 'androidx.room:room-paging:2.5.0'
     kapt 'androidx.room:room-compiler:2.5.0'
+
+    implementation platform('com.google.firebase:firebase-bom:31.2.0')
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.3'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
